@@ -10,7 +10,7 @@ jobs:
   updateAndBuild:
     name: Update template HelloStaticSharp and Build
     runs-on: ubuntu-22.04
-    if: github.event.type == "repository_dispatch"
+    if: github.event_name == "repository_dispatch"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v1
@@ -25,7 +25,7 @@ jobs:
           dotnet build
   build:
     name: Build
-    if: github.event.type != "repository_dispatch"
+    if: github.event_name != "repository_dispatch"
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout repository
