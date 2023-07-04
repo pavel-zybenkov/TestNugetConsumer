@@ -18,7 +18,20 @@ jobs:
       - name: Update package reference
         run: |
           dotnet nuget locals all --clear
-          dotnet add ./TestNugetConsumer.csproj package SomeTestNuget --source https://api.nuget.org/v3/index.json --version ${{ github.event.client_payload.package_version }}
+          retries=3000
+          while ((retries>0)); do 
+            echo $retries
+            dotnet add ./TestNugetConsumer.csproj package SomeTestNuget --source https://api.nuget.org/v3/index.json --version ${{ github.event.client_payload.package_version }}
+            if (($?==0)); then 
+                break;
+            fi; 
+            sleep 1; 
+            ((retries--))
+          done
+          if ((retries==0)); then
+            echo "Failed!"
+            exit 1
+          fi;
           
       - name: Build
         run: |    
