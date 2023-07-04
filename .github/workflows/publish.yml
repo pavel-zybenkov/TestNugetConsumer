@@ -1,4 +1,4 @@
-name: publish to nuget
+name: update StaticSharp.Core reference
 on:
   push:
     branches:
@@ -14,9 +14,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v1
 
-      - name: Pack StaticSharp.Core
+      - name: Update package reference
         run: |
           dotnet nuget locals all --clear
           dotnet add ./TestNugetConsumer.csproj package SomeTestNuget --source https://api.nuget.org/v3/index.json
+          
+      - name: Build
+        run: |    
           dotnet build
       
