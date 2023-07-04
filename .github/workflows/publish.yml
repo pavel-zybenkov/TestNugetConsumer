@@ -7,9 +7,10 @@ on:
     types: [staticsharp_core_updated]
   workflow_dispatch:
 jobs:
-  build:
+  updateAndBuild:
+    name: Update template HelloStaticSharp and Build
     runs-on: ubuntu-22.04
-    name: Update template HelloStaticSharp
+    if: github.event.type == "repository_dispatch"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v1
@@ -17,8 +18,19 @@ jobs:
       - name: Update package reference
         run: |
           dotnet nuget locals all --clear
-          dotnet add ./TestNugetConsumer.csproj package SomeTestNuget --source https://api.nuget.org/v3/index.json
+          dotnet add ./TestNugetConsumer.csproj package SomeTestNuget --source https://api.nuget.org/v3/index.json --version ${{ github.event.client_payload.package_version }}
           
+      - name: Build
+        run: |    
+          dotnet build
+  build:
+    name: Build
+    if: github.event.type != "repository_dispatch"
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+
       - name: Build
         run: |    
           dotnet build
