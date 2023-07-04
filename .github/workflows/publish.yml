@@ -17,11 +17,14 @@ jobs:
 
       - name: Update package reference
         run: |
+          echo "Target package version ${{ github.event.client_payload.package_version }}"
+          echo "Retrying until package is validated and ready..."
           set +e
           retries=3000
           while ((retries>0)); do 
-            echo $retries
-            dotnet nuget locals all --clear
+            echo "retries remaining: $retries"
+            dotnet nuget locals all --clear \
+            > /dev/null 2>&1
             dotnet add ./TestNugetConsumer.csproj package SomeTestNuget \
             --source https://api.nuget.org/v3/index.json \
             --version ${{ github.event.client_payload.package_version }} \
