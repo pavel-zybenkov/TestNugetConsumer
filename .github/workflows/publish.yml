@@ -1,0 +1,22 @@
+name: publish to nuget
+on:
+  push:
+    branches:
+      - main
+  repository_dispatch:
+    types: [staticsharp_core_updated]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    name: Update template HelloStaticSharp
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+
+      - name: Pack StaticSharp.Core
+        run: |
+          dotnet nuget locals all --clear
+          dotnet add ./TestNugetConsumer.csproj package SomeTestNuget --source https://api.nuget.org/v3/index.json
+          dotnet build
+      
