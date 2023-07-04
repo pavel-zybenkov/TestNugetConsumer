@@ -18,6 +18,7 @@ jobs:
       - name: Update package reference
         run: |
           dotnet nuget locals all --clear
+          set +e
           retries=3000
           while ((retries>0)); do 
             echo $retries
@@ -25,7 +26,7 @@ jobs:
             if (($?==0)); then 
                 break;
             fi; 
-            sleep 1; 
+            sleep 2; 
             ((retries--))
           done
           if ((retries==0)); then
